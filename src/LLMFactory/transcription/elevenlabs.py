@@ -1,16 +1,10 @@
-try:
-    from elevenlabs.client import ElevenLabs
-    from elevenlabs.types import (
-        SpeechToTextChunkResponseModel, 
-        SpeechToTextWordResponseModel, 
-        ExportOptions_SegmentedJson, 
-        AdditionalFormatResponseModel
-    )
-except ImportError:
-    raise ImportError(
-        "The 'elevenlabs' package is required to use ElevenLabs models. "
-        "Install it with: pip install elevenlabs"
-    )
+from elevenlabs.client import ElevenLabs
+from elevenlabs.types import (
+    SpeechToTextChunkResponseModel, 
+    SpeechToTextWordResponseModel, 
+    ExportOptions_SegmentedJson, 
+    AdditionalFormatResponseModel
+)
 
 from .base import TranscriptionProvider, TranscriptionResult, TranscribedWord, TranscribedSegment
 

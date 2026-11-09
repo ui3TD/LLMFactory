@@ -13,7 +13,6 @@ LLMFactory is a python library that provides a unified interface for simple prom
 - Claude
 - OpenAI
 - Grok
-- Deepseek
 - OpenRouter
 
 ### Images:
@@ -21,4 +20,5 @@ LLMFactory is a python library that provides a unified interface for simple prom
 - Dall-E
 
 ### Transcription:
-- ElevenLabs (To Do)
+- ElevenLabs
+- OpenAI Whisper

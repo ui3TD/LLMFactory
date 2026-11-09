@@ -1,11 +1,5 @@
-try:
-    from google.genai import Client
-    from google.genai.types import GenerateImagesConfig, PersonGeneration, SafetyFilterLevel
-except ImportError:
-    raise ImportError(
-        "The 'google-genai' package is required to use Imagen models. "
-        "Install it with: pip install google-genai"
-    )
+from google.genai import Client
+from google.genai.types import GenerateImagesConfig, PersonGeneration, SafetyFilterLevel
 
 from .base import ImageProvider
 from PIL import Image

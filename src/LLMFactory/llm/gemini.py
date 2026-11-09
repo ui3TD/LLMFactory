@@ -1,71 +1,38 @@
-try:
-    from google.genai import Client
-    from google.genai.types import Content, Part, SafetySetting, Tool, GoogleSearch, GenerateContentConfig
-except ImportError:
-    raise ImportError(
-        "The 'google-genai' package is required to use Gemini models. "
-        "Install it with: pip install google-genai"
-    )
+from google.genai import Client
+from google.genai.types import Content, GenerateContentConfig, GoogleSearch, Part, SafetySetting, Tool
 
 from .base import LLMProvider
 
+_UNFILTERED = [
+    SafetySetting(category=category, threshold="BLOCK_NONE")
+    for category in (
+        "HARM_CATEGORY_HARASSMENT",
+        "HARM_CATEGORY_HATE_SPEECH",
+        "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        "HARM_CATEGORY_DANGEROUS_CONTENT",
+    )
+]
+
+
 class GeminiProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str, system_prompt: str = None):
-        super().__init__(api_key, model, system_prompt)
+    supports_grounding = True
+
+    def __init__(self, api_key: str, model: str, system_prompt: str | None = None, max_retries: int = 5):
+        super().__init__(api_key, model, system_prompt, max_retries)
         self.client = Client(api_key=self.api_key)
 
-    def prompt(self, user_prompt: str, system_prompt: str | None = None, **kwargs) -> str:
-        """
-        Sends a prompt to Gemini and returns the response.
-        
-        Supported kwargs:
-        - grounding (bool): Enable Google Search grounding
-        """
-        if system_prompt is None:
-            system_prompt = self.system_prompt
-            
-        grounding = kwargs.get("grounding", False)
-
-        prompt_messages = [
-            Content(parts=[Part(text=user_prompt)], role="user")
-            ]
-        
-        safety_settings = [
-            SafetySetting(
-                category='HARM_CATEGORY_HARASSMENT',
-                threshold='BLOCK_NONE'
-            ),
-            SafetySetting(
-                category='HARM_CATEGORY_HATE_SPEECH',
-                threshold='BLOCK_NONE'
-            ),
-            SafetySetting(
-                category='HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                threshold='BLOCK_NONE'
-            ),
-            SafetySetting(
-                category='HARM_CATEGORY_DANGEROUS_CONTENT',
-                threshold='BLOCK_NONE'
-            )
-        ]
-        
-        config_params = {
-            'system_instruction': system_prompt,
-            'safety_settings': safety_settings
-        }
-        
+    def _complete(self, user_prompt: str, system_prompt: str, grounding: bool, prefill: str) -> str:
+        config = {"system_instruction": system_prompt, "safety_settings": _UNFILTERED}
         if grounding:
-            config_params['tools'] = [Tool(google_search=GoogleSearch())]
-        
-        self.logger.debug(f"Gemini prompt messages:\n{prompt_messages}")
+            config["tools"] = [Tool(google_search=GoogleSearch())]
+
         response = self.client.models.generate_content(
             model=self.model,
-            contents=prompt_messages,
-            config=GenerateContentConfig(**config_params)
+            contents=[Content(parts=[Part(text=user_prompt)], role="user")],
+            config=GenerateContentConfig(**config),
         )
-        self.logger.debug(f"Gemini response:\n{response.model_dump_json()}")
 
-        if not hasattr(response, 'text') or not response.text:
+        if not response.text:
             self.logger.warning("Gemini returned empty or invalid response")
             return ""
 
