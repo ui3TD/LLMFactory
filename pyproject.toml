@@ -19,7 +19,11 @@ dependencies = [
     "Requests>=2.32.4",
     "openai>=1.0.0",
     "google-genai>=1.19.0",
+    "elevenlabs>=2.6.0",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
