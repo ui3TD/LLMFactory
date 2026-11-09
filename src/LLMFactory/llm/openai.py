@@ -57,7 +57,7 @@ class GPTProvider(LLMProvider):
 
         search_tool = []
         if grounding:
-            search_tool={"type": "web_search_preview"}
+            search_tool = [{"type": "web_search_preview"}]
             
         prompt_messages = [
             {"role": "developer", "content": system_prompt},

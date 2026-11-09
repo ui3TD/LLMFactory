@@ -82,7 +82,7 @@ class ScribeProvider(TranscriptionProvider):
                         start=word_data.get("start", 0.0),
                         end=word_data.get("end", 0.0),
                         type=word_data.get("type", "word"),
-                        speaker=word_data.get("speaker_id"),
+                        speaker=word_data.get("speaker_id") or "Default",
                         confidence=word_data.get("logprob")
                     )
                     for word_data in words_data_list
@@ -105,7 +105,7 @@ class ScribeProvider(TranscriptionProvider):
                         start=word.start or 0.0,
                         end=word.end or 0.0,
                         type=word.type,
-                        speaker=speaker_id or None,
+                        speaker=speaker_id or "Default",
                         confidence=word.logprob or None
                     )
                     for word in words_list
