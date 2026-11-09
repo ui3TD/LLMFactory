@@ -1,6 +1,5 @@
 from openai import OpenAI
 from openai.types.audio.transcription_verbose import TranscriptionVerbose
-from openai.types.audio.transcription_word import TranscriptionWord
 
 from .base import TranscriptionResult, TranscribedWord, TranscribedSegment, WritableTranscriptionProvider
 

@@ -3,7 +3,6 @@ from elevenlabs.types import (
     SpeechToTextChunkResponseModel, 
     SpeechToTextWordResponseModel, 
     ExportOptions_SegmentedJson, 
-    AdditionalFormatResponseModel
 )
 
 from .base import TranscriptionProvider, TranscriptionResult, TranscribedWord, TranscribedSegment
